@@ -1,0 +1,71 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-xml.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-http-binding.xml"/>
+
+    <jaxws:endpoint id="echoService" implementor="cl.borrego.frontend.ws.impl.EchoServiceImpl"
+                    address="/echo" bindingUri="http://www.w3.org/2004/08/wsdl/http">
+        <jaxws:serviceFactory>
+            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
+                <property name="wrapped" value="true"/>
+            </bean>
+        </jaxws:serviceFactory>
+        <jaxws:inInterceptors>
+            <ref bean="logInbound"/>
+        </jaxws:inInterceptors>
+        <jaxws:outInterceptors>
+            <ref bean="logOutbound"/>
+        </jaxws:outInterceptors>
+    </jaxws:endpoint>
+    <jaxws:endpoint id="soapEchoService" implementor="cl.borrego.frontend.ws.impl.SOAPEchoServiceImpl"
+                    address="/soapecho" >
+        <jaxws:serviceFactory>
+            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
+                <property name="wrapped" value="false"/>
+            </bean>
+        </jaxws:serviceFactory>
+        <jaxws:inInterceptors>
+            <ref bean="logInbound"/>
+        </jaxws:inInterceptors>
+        <jaxws:outInterceptors>
+            <ref bean="logOutbound"/>
+        </jaxws:outInterceptors>
+    </jaxws:endpoint>
+    <jaxws:endpoint id="simpleService" implementor="cl.borrego.frontend.ws.impl.SimpleServiceImpl"
+                    address="/simple" bindingUri="http://www.w3.org/2004/08/wsdl/http">
+        <jaxws:serviceFactory>
+            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
+                <property name="wrapped" value="true"/>
+            </bean>
+        </jaxws:serviceFactory>
+        <jaxws:inInterceptors>
+            <ref bean="logInbound"/>
+        </jaxws:inInterceptors>
+        <jaxws:outInterceptors>
+            <ref bean="logOutbound"/>
+        </jaxws:outInterceptors>
+    </jaxws:endpoint>
+    <jaxws:endpoint id="soapSimpleService" implementor="cl.borrego.frontend.ws.impl.SOAPSimpleServiceImpl"
+                    address="/soapsimple" >
+        <jaxws:serviceFactory>
+            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
+                <property name="wrapped" value="false"/>
+            </bean>
+        </jaxws:serviceFactory>
+        <jaxws:inInterceptors>
+            <ref bean="logInbound"/>
+        </jaxws:inInterceptors>
+        <jaxws:outInterceptors>
+            <ref bean="logOutbound"/>
+        </jaxws:outInterceptors>
+    </jaxws:endpoint>
+
+    <bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+    <bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+
+</beans>

@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<definitions 
+	xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:si="http://soapinterop.org/xsd" 
+	xmlns:tns="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.wsdl" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns="http://schemas.xmlsoap.org/wsdl/" 
+	targetNamespace="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.wsdl">
+	
+	<message name="chequeaIngredienteRequest">
+		<part name="nombreIngrediente" type="xsd:string" />
+	</message>
+	<message name="chequeaIngredienteResponse">
+		<part name="return" type="xsd:boolean" />
+	</message>
+	
+	<message name="precioIngredienteRequest">
+		<part name="nombreIngrediente" type="xsd:string" />
+	</message>
+	
+	<message name="precioIngredienteResponse">
+		<part name="return" type="xsd:double" />
+	</message>
+	
+	<portType name="ServicioIngredientesPortType">
+		<operation name="chequeaIngrediente">
+			<input message="tns:chequeaIngredienteRequest"/>
+			<output message="tns:chequeaIngredienteResponse"/>
+		</operation>
+		<operation name="precioIngrediente">
+			<input message="tns:precioIngredienteRequest"/>
+			<output message="tns:precioIngredienteResponse"/>
+		</operation>
+	</portType>
+	
+	<binding name="ServicioIngredientesBinding" 
+			 type="tns:ServicioIngredientesPortType">
+		<soap:binding style="rpc" 
+					transport="http://schemas.xmlsoap.org/soap/http"/>
+			<operation name="chequeaIngrediente">
+				<soap:operation soapAction="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.php" 
+					style="rpc"/>
+				<input>
+					<soap:body use="literal"
+						namespace="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.php" 
+						/>
+				</input>
+				<output>
+					<soap:body use="literal"
+						namespace="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.php" 
+						/>
+				</output>
+			</operation>
+			<operation name="precioIngrediente">
+				<soap:operation 
+					soapAction="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.php" 
+					style="rpc"/>
+				<input>
+					<soap:body use="literal" 
+						namespace="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.php" 
+						/>
+				</input>
+				<output>
+					<soap:body use="literal" 
+						namespace="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.php" 
+						/>
+				</output>
+			</operation>
+			</binding>
+			
+	<service name="ServicioIngredientes">
+		<port name="ServicioIngredientesPort" 
+			  binding="tns:ServicioIngredientesBinding">
+			 <soap:address location="http://petra.euitio.uniovi.es/~labra/ws/ingredientes.php"/>
+		</port>
+	</service>
+</definitions>
