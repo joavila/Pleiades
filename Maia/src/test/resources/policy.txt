@@ -1,0 +1,11 @@
+grant {
+    permission java.util.PropertyPermission "idea.launcher.bin.path", "read";
+    permission java.lang.RuntimePermission "loadLibrary.*";
+    permission java.util.PropertyPermission "idea.launcher.port", "read";
+    permission java.io.FilePermission "${user.home}/junit.properties", "read";
+    permission java.lang.RuntimePermission "setIO";
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+    
+    permission java.util.PropertyPermission "user.home", "read";
+};
