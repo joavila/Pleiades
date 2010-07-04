@@ -236,7 +236,7 @@
                 <executions>
                     <execution>
                         <!--Run as part of the 'test' phase in the Maven lifecycle-->
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <id>soapUI</id>
                         <goals>
                             <!--Run the 'test' phase of eviware:maven-soapui-plugin-->
