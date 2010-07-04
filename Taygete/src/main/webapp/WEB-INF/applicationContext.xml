@@ -23,7 +23,7 @@
         </jaxws:outInterceptors>
     </jaxws:endpoint>
     <jaxws:endpoint id="soapEchoService" implementor="cl.borrego.frontend.ws.impl.SOAPEchoServiceImpl"
-                    address="/soapecho" >
+                    address="/soapecho">
         <jaxws:serviceFactory>
             <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
                 <property name="wrapped" value="false"/>
@@ -33,6 +33,8 @@
             <ref bean="logInbound"/>
         </jaxws:inInterceptors>
         <jaxws:outInterceptors>
+            <ref bean="contentTypeFixer"/>
+            <ref bean="encodingFixer"/>
             <ref bean="logOutbound"/>
         </jaxws:outInterceptors>
     </jaxws:endpoint>
@@ -51,7 +53,7 @@
         </jaxws:outInterceptors>
     </jaxws:endpoint>
     <jaxws:endpoint id="soapSimpleService" implementor="cl.borrego.frontend.ws.impl.SOAPSimpleServiceImpl"
-                    address="/soapsimple" >
+                    address="/soapsimple">
         <jaxws:serviceFactory>
             <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
                 <property name="wrapped" value="false"/>
@@ -67,5 +69,6 @@
 
     <bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
     <bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
-
+    <bean id="contentTypeFixer" class="cl.borrego.frontend.ws.interceptor.impl.ContentTypeFixer"/>
+    <bean id="encodingFixer" class="cl.borrego.frontend.ws.interceptor.impl.EncodingFixer"/>
 </beans>
