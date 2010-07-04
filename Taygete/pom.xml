@@ -13,9 +13,62 @@
     <name>Taygete</name>
     <url>http://www.borrego.cl/pleiades/Taygete</url>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>eviwarePluginRepository</id>
+            <url>http://www.eviware.com/repository/maven2/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>codehaus snapshot repository</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>openqa-releases</id>
+            <name>Openqa Release Repository</name>
+            <url>http://nexus.openqa.org/content/repositories/releases</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>openqa-snapshots</id>
+            <name>Openqa Snapshot Repository</name>
+            <url>http://nexus.openqa.org/content/repositories/snapshots</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+
     <properties>
         <spring.version>2.0.7</spring.version>
         <cxf.version>2.2.3</cxf.version>
+
+        <cargo.wait>true</cargo.wait>
+        <cargo.container>jetty6x</cargo.container>
+        <cargo.container.installed.version>jetty-6.1.24</cargo.container.installed.version>
+        <!-- cargo.container.url>http://dist.codehaus.org/jetty/${cargo.container.installed.version}/${cargo.container.installed.version}.zip</cargo.container.url -->
+        <!-- installDir>${env.SW_DIR}</installDir -->
+
+        <cargo.host>localhost</cargo.host>
+        <cargo.port>9080</cargo.port>
     </properties>
 
     <dependencies>
@@ -123,6 +176,19 @@
             <version>${cxf.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openqa.selenium.server</groupId>
+            <artifactId>selenium-server</artifactId>
+            <version>0.9.2</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -152,6 +218,231 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>eviware</groupId>
+                <artifactId>maven-soapui-plugin</artifactId>
+                <!--This is the version of soapUI to grab from plugin repo-->
+                <!--At the time of writing the 3.5.1 plugin had not been created-->
+                <version>3.5.1</version>
+                <configuration>
+                    <!--The location of your soapUI setting file-->
+                    <projectFile>${basedir}/src/test/soapui/soapecho-soapui-project.xml</projectFile>
+                    <!--host>{cargo.host}:{cargo.port}</host -->
+                    <!--Where to place the output of the run-->
+                    <outputFolder>${basedir}/target/soapui</outputFolder>
+                    <!--Make the jUnit results file-->
+                    <junitReport>true</junitReport>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!--Run as part of the 'test' phase in the Maven lifecycle-->
+                        <phase>test</phase>
+                        <id>soapUI</id>
+                        <goals>
+                            <!--Run the 'test' phase of eviware:maven-soapui-plugin-->
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <!--Run as part of the 'verify' phase in the Maven lifecycle-->
+                        <phase>verify</phase>
+                        <id>soapui-tests</id>
+                        <configuration>
+                            <projectFile>${basedir}/src/test/soapui/iso-soapui-project.xml</projectFile>
+                            <outputFolder>${basedir}/target/soapui</outputFolder>
+                            <junitReport>true</junitReport>
+                            <exportAll>true</exportAll>
+                            <printReport>false</printReport>
+                        </configuration>
+                        <goals>
+                            <!--Run the 'test' phase of eviware:maven-soapui-plugin-->
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>selenium-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start-server</goal>
+                        </goals>
+                        <configuration>
+                            <background>true</background>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Skip the normal tests, we'll run them in the integration-test phase -->
+                    <skip>true</skip>
+                    <excludes>
+                        <exclude>**/selenium/*Test.java</exclude>
+                        <exclude>**/*$*</exclude>
+                    </excludes>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>integration-test</id>
+            <activation>
+                <property>
+                    <name>!maven.test.skip</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <version>1.0.2-SNAPSHOT</version>
+                        <configuration>
+                            <wait>${cargo.wait}</wait>
+                            <container>
+                                <containerId>${cargo.container}</containerId>
+                                <home>${env.SW_HOME}/${cargo.container.installed.version}</home>
+                                <!-- zipUrlInstaller>
+                                   <url>${cargo.container.url}</url>
+                                   <installDir>${installDir}</installDir>
+                               </zipUrlInstaller -->
+                            </container>
+                            <configuration>
+                                <home>${project.build.directory}/${cargo.container}/container</home>
+                                <properties>
+                                    <cargo.hostname>${cargo.host}</cargo.hostname>
+                                    <cargo.servlet.port>${cargo.port}</cargo.servlet.port>
+                                </properties>
+                            </configuration>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-container</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop-container</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>launch-selenium</id>
+                                <phase>integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef resource="selenium-ant.properties">
+                                            <classpath refid="maven.plugin.classpath"/>
+                                        </taskdef>
+                                        <selenese suite="src/test/resources/selenium/TestSuite.html"
+                                                  browser="*firefox" timeoutInSeconds="180" port="5555"
+                                                  results="${project.build.directory}/selenium-firefox-results.html"
+                                                  startURL="http://${cargo.host}:${cargo.port}/${project.build.finalName}/"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>ant</groupId>
+                                <artifactId>ant-nodeps</artifactId>
+                                <version>1.6.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.openqa.selenium.server</groupId>
+                                <artifactId>selenium-server</artifactId>
+                                <version>0.9.2</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>selenium-ie</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>launch-selenium</id>
+                                <phase>integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef resource="selenium-ant.properties">
+                                            <classpath refid="maven.plugin.classpath"/>
+                                        </taskdef>
+                                        <selenese suite="src/test/resources/selenium/TestSuite.html"
+                                                  browser="*firefox" timeoutInSeconds="180" port="5555"
+                                                  results="${project.build.directory}/selenium-firefox-results.html"
+                                                  startURL="http://${cargo.host}:${cargo.port}/${project.build.finalName}/"/>
+                                        <selenese suite="src/test/resources/selenium/TestSuite.html"
+                                                  browser="*iexplore" timeoutInSeconds="180" port="5555"
+                                                  results="${project.build.directory}/selenium-ie-results.html"
+                                                  startURL="http://${cargo.host}:${cargo.port}/${project.build.finalName}/"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>target/site/soapui</outputDirectory>
+                    <reportsDirectories>
+                        <reportsDirectories>target/soapui/</reportsDirectories>
+                    </reportsDirectories>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

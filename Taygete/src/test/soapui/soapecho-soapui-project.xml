@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="soapecho" resourceRoot="" soapui-version="3.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="SOAPEchoServiceImplSoapBinding" type="wsdl" bindingName="{http://borrego.cl/}SOAPEchoServiceImplSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho?wsdl"><con:part><con:url>http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SOAPEchoServiceImpl" targetNamespace="http://borrego.cl/" xmlns:ns1="http://impl.ws.frontend.borrego.cl/" xmlns:ns2="http://cxf.apache.org/bindings/xformat" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://borrego.cl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:import location="http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho?wsdl=SOAPEchoServiceImpl.wsdl" namespace="http://impl.ws.frontend.borrego.cl/"></wsdl:import>
+  <wsdl:binding name="SOAPEchoServiceImplSoapBinding" type="ns1:SOAPEchoServiceImpl">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="invoke">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="invoke">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="invokeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SOAPEchoServiceImpl">
+    <wsdl:port binding="tns:SOAPEchoServiceImplSoapBinding" name="SOAPEchoServicePort">
+      <soap:address location="http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho?wsdl=SOAPEchoServiceImpl.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SOAPEchoServiceImpl" targetNamespace="http://impl.ws.frontend.borrego.cl/" xmlns:ns1="http://impl.ws.frontend.borrego.cl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://impl.ws.frontend.borrego.cl/" xmlns="http://impl.ws.frontend.borrego.cl/" xmlns:tns="http://borrego.cl/">
+      <xsd:element name="invoke" nillable="true" type="xsd:anyType"/>
+      <xsd:element name="invokeResponse" nillable="true" type="xsd:anyType"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="invokeResponse">
+    <wsdl:part element="ns1:invokeResponse" name="invokeResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="invoke">
+    <wsdl:part element="ns1:invoke" name="invoke"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SOAPEchoServiceImpl">
+    <wsdl:operation name="invoke">
+      <wsdl:input message="ns1:invoke" name="invoke"></wsdl:input>
+      <wsdl:output message="ns1:invokeResponse" name="invokeResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="invoke" bindingOperationName="invoke" type="Request-Response" outputName="invokeResponse" inputName="invoke" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.ws.frontend.borrego.cl/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <impl:invoke>?</impl:invoke>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://borrego.cl/SOAPEchoServiceImpl/invoke"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite name="TestSuite 1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true" id="49a2fbab-4245-4669-be48-31858cfcdb20"><con:settings/><con:testStep type="request" name="invoke - Request 1"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>SOAPEchoServiceImplSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="invoke - Request 1" outgoingWss="" incomingWss="" timeout="" wssPasswordType=""><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:9080/frontend-1.0-SNAPSHOT/ws/soapecho</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.ws.frontend.borrego.cl/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <impl:invoke>?</impl:invoke>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response"/><con:assertion type="GroovyScriptAssertion"><con:configuration><scriptText>assert messageExchange.responseHeaders["Content-Type"] == "text/xml; charset=utf-8"</scriptText></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://borrego.cl/SOAPEchoServiceImpl/invoke"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/></con:soapui-project>
